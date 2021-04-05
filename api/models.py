@@ -425,7 +425,7 @@ class Dataset(models.Model):
         return "/home/marlabs" + self.get_hdfs_relative_path()
 
     def get_input_file(self):
-        print("Test upload New message in API container log")
+        print("Test upload New message in API container logs")
         if self.datasource_type in ['file', 'fileUpload']:
             type = self.file_remote
             if type == 'emr_file':
