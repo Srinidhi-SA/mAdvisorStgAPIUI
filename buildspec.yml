@@ -24,7 +24,7 @@ phases:
       - echo Pushing the Docker images...
       - echo Writing image definitions file...
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - printf '[{"name":"madvisor-nginx","imageUri":$REPOSITORY_URI:$IMAGE_TAG}, {"name":"madvisor-api","imageUri":$REPOSITORY_URI:$IMAGE_TAG_API}]'  > imagedefinitions.json
+      - printf '[{"name":"madvisor-nginx","imageUri":"%s"}, {"name":"madvisor-api","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG $REPOSITORY_URI:$IMAGE_TAG_API > imagedefinitions.json
       - cat imagedefinitions.json 
 artifacts:
     files: imagedefinitions.json
