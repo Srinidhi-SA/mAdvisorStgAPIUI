@@ -6,15 +6,14 @@ phases:
       - echo Logging in to Amazon ECR...
       - aws --version
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email) 
-      - REPOSITORY_URI=115502491259.dkr.ecr.us-west-1.amazonaws.com/madvisor_stg_nginx 
+      - REPOSITORY_URI=115502491259.dkr.ecr.us-west-1.amazonaws.com/madvisor_stg_api
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - sh copyApiFolder.sh
-      - cd NGINX_DOCKER
+      - cd API_DOCKER
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG 
       - cd ..  
@@ -24,7 +23,7 @@ phases:
       - echo Pushing the Docker images...
       - echo Writing image definitions file...
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - printf '[{"name":"madvisor-nginx","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - printf '[{"name":"madvisor-api","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json 
 artifacts:
     files: imagedefinitions.json
