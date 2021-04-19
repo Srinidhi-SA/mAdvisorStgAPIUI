@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - npm install newman --global
+  build:
+    commands:
+      - newman run -r html,cli Test-phase-test.postman_collection.json --reporter-html-export report.html
+
+artifacts:
+  files:
+    - report.html
+
