@@ -1,5 +1,4 @@
 FROM 115502491259.dkr.ecr.us-west-1.amazonaws.com/ubuntu:latest
-
 ENV TZ=US
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get update \
@@ -28,7 +27,8 @@ RUN apt-get install virtualenv enchant vim telnet net-tools iputils-ping -y
 RUN apt-get install libmysqlclient-dev -y && apt install postgresql-server-dev-all -y 
 #RUN . myenv/bin/activate 
 #RUN pip3 install -U setuptools
-RUN pip3 install pyenchant && pip3 install -r requirements.txt && pip3 install --no-cache-dir torch==1.7.0
+RUN pip3 install pyenchant && pip3 install -r requirements.txt
+
 RUN apt-get install curl -y
 
 #COPY * /home/mAdvisor/madvisor-api-temp/
