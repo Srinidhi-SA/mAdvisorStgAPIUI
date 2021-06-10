@@ -4,6 +4,7 @@ rm -r mAdvisor-MLScripts
 git clone -b dev_ml --single-branch https://Srinidhi-SA:Sri160293@github.com/Marlabs1/mAdvisor-MLScripts
 cp Dockerfile mAdvisor-MLScripts/
 cd mAdvisor-MLScripts
+cat Dockerfile
 sh apiCode.sh
 cd SPARK_DOCKER
 docker build -t $REPOSITORY_URI_SPARK:latest .
