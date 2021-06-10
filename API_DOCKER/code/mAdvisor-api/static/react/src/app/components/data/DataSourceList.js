@@ -25,8 +25,6 @@ export class DataSourceList extends React.Component {
 
   constructor(props) {
     super(props);
-    this.onDrop = this.onDrop.bind(this);
-    this.handleSelect = this.handleSelect.bind(this);
   }
   componentWillMount() {
     this.props.dispatch(getDataSourceList());
@@ -104,7 +102,7 @@ export class DataSourceList extends React.Component {
     if (dataSrcList) {
       const navTabs = dataSrcList.map((data, i) => {
         return (
-          <NavItem eventKey={data.dataSourceType} key={i} onSelect={this.handleSelect}>
+          <NavItem eventKey={data.dataSourceType} key={i} onSelect={this.handleSelect.bind(this)}>
             {data.dataSourceName}
           </NavItem>
         )
@@ -139,7 +137,7 @@ export class DataSourceList extends React.Component {
                   </h4>
                   <div className="clearfix"></div>
                   <div className="dropzone ">
-                    <Dropzone id={1} onDrop={this.onDrop} accept=".csv" multiple={true} onDropRejected={this.popupMsg}>
+                    <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".csv" multiple={true} onDropRejected={this.popupMsg}>
                       <p>Please drag and drop your file here or browse.</p>
                     </Dropzone>
                   </div>
@@ -150,10 +148,10 @@ export class DataSourceList extends React.Component {
                             {(this.props.fileUpload[0].name!="")&&
                             this.props.fileUpload.map(file=>{
                               return(
-                              <li style={{padding:0}}>
+                              <li className="xs-p-0">
                                 {file.name}
                                 <span> - </span> {bytesToSize(file.size)}
-                                <span style={{ marginLeft: "15px" }} onClick={this.deleteFile.bind(this, file)}>
+                                <span className="xs-ml-15" onClick={this.deleteFile.bind(this, file)}>
                                   <i class="fa fa-times" style={{ color: '#555', cursor: 'pointer' }}></i>
                                 </span>  
                               </li>

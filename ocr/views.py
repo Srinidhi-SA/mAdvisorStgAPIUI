@@ -771,6 +771,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         custom_data.update(generic_labels)
         object_details["labels_list"] = [key for key in custom_data]
         object_details["image_name"] = object_details['imagefile'].split('/')[-1]
+        object_details["imagefile"] = object_details['imagefile'].replace('http', 'https')
+        object_details["generated_image"] = object_details['generated_image'].replace('http', 'https')
         object_details['custom_data'] = [{'label_name': label, 'data': data} for label, data in custom_data.items()]
         desired_response = ['name', 'imagefile', 'slug', 'generated_image', 'is_recognized', 'tasks', 'values',
                             'classification', 'custom_data', 'labels_list', 'image_name']
@@ -870,7 +872,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         if serializer.is_valid():
             imageset_object = serializer.save()
-            imageset_object.create()
             imageset_id = imageset_object.id
             response['imageset_serializer_data'] = serializer.data
             response['imageset_message'] = 'SUCCESS'
@@ -882,9 +883,8 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         image_query = self.get_queryset()
         for i in image_query:
             imagename_list.append(i.name)
-
         for file in files:
-            if file.name not in invalid_images:
+            if file not in invalid_images:
                 if data['dataSourceType'] == 'S3':
                     img_data = dict()
                     django_file = File(open(os.path.join(s3_dir, file), 'rb'), name=file)
@@ -981,6 +981,7 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         response.data['values'] = value
         response.data['total_data_count_wf'] = len(
             OCRImage.objects.filter(created_by_id=request.user.id, project=project_id))
+        print(response.data)
         return response
 
     def retrieve(self, request, *args, **kwargs):
@@ -1073,7 +1074,6 @@ class OCRImageView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                         image_queryset.save()
                         template = json.loads(Template.objects.first().template_classification)
                         if request.user.username in foreign_user_mapping:
-                            # print(f"{'*'*50}{foreign_user_mapping[request.user.username]}{'*'*50}")
                             response = write_to_ocrimage_lang_support.apply_async(
                                 args=(image_queryset.imagefile.path, slug, foreign_user_mapping[request.user.username],
                                       template))

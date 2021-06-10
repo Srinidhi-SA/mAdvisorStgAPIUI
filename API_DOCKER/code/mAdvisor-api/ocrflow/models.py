@@ -385,4 +385,3 @@ def submit_for_approval(sender, instance, created, **kwargs):
         instance.start_simpleflow()
 
 post_save.connect(submit_for_approval, sender=ReviewRequest)
-

@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { Pagination } from "react-bootstrap";
 import {
     getAppsScoreList,
-    updateScoreSlug,
     handleScoreRename,
     handleScoreDelete,
     storeScoreSearchElement,
@@ -57,9 +56,6 @@ export class AppsScoreList extends React.Component {
   }
   componentDidMount(){
     this.props.dispatch(refreshAppsScoreList(this.props));
-  }
-  getScoreSummary(slug) {
-    this.props.dispatch(updateScoreSlug(slug))
   }
   handleScoreDelete(slug) {
     this.props.dispatch(handleScoreDelete(slug, this.refs.dialog));
@@ -132,26 +128,26 @@ export class AppsScoreList extends React.Component {
                   <div className="input-group">
       							<div className="search-wrapper">
 			      					<input type="text" name="score_insights" value={this.props.score_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" className="form-control search-box"  placeholder="Search Score insights... " required />
-						      		<span className="zmdi zmdi-search form-control-feedback"></span>
+						      		<span className="fa fa-search form-control-feedback"></span>
 								      <button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
 							      </div>							
 				          </div>
                   <div className="btn-group">
                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
-                      <i className="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
+                      <i className="glyphicon glyphicon-sort"></i>
                     </button>
                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
                       <li>
-                        <a href="javascript:;" onClick={this.doSorting.bind(this,'name','asc')}><i class="zmdi zmdi-sort-amount-asc"></i> Name Ascending</a>
+                        <a href="javascript:;" onClick={this.doSorting.bind(this,'name','asc')}><i class="fa fa-sort-alpha-asc"></i> Name Ascending</a>
                       </li>
                       <li>
-                        <a href="javascript:;" onClick={this.doSorting.bind(this,'name','desc')}><i class="zmdi zmdi-sort-amount-desc"></i> Name Descending</a>
+                        <a href="javascript:;" onClick={this.doSorting.bind(this,'name','desc')}><i class="fa fa-sort-alpha-desc"></i> Name Descending</a>
                       </li>
                       <li>
-                        <a href="javascript:;" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="zmdi zmdi-calendar-alt"></i> Date Ascending</a>
+                        <a href="javascript:;" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="fa fa-long-arrow-down arrIcon"></i><i style={{fontSize:12}} class="fa fa-calendar-check-o"></i> Date Ascending</a>
                       </li>
                       <li>
-                        <a href="javascript:;" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="zmdi zmdi-calendar"></i> Date Descending</a>
+                        <a href="javascript:;" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="fa fa-long-arrow-up arrIcon"></i><i style={{fontSize:12}} class="fa fa-calendar-check-o"></i> Date Descending</a>
                       </li>
                     </ul>
                   </div>
@@ -197,7 +193,7 @@ export class AppsScoreList extends React.Component {
     }else if((this.props.score_search_element==="" || this.props.score_search_element===null) && (this.props.apps_score_sorton!=""&&this.props.apps_score_sorton!=null)){
       this.props.history.push(this.props.match.url+'?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype+'&page=' + eventKey + '');
     }else
-      this.props.history.push('/apps/'+this.props.match.params.AppId+ modeSelected +'/scores?page=' + eventKey + '')
+      this.props.history.push(this.props.match.url+'?page=' + eventKey + '')
       this.props.dispatch(getAppsScoreList(eventKey));
     }
 

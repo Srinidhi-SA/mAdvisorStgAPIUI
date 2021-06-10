@@ -1137,7 +1137,7 @@ class StockDatasetView(viewsets.ModelViewSet):
             else:
                 company_str = companies[0]
             # return creation_failed_exception("No news articles found for "+company_str)
-            return "No news articles found for "+company_str
+            return "No news articles found for "+company_str, companies
 
     def create(self, request, *args, **kwargs):
 
@@ -1145,13 +1145,13 @@ class StockDatasetView(viewsets.ModelViewSet):
         config = data.get('config')
         new_data = {'name': config.get('analysis_name')}
         domains = config.get('domains')
-        new_data['domains'] = (", ").join(list(set(domains)))
+        new_data['domains'] = ", ".join(list(set(domains)))
         stock_symbol = config.get('stock_symbols')
 
         stocks = {item['ticker'].lower(): item['name'] for item in stock_symbol}
-        error_str = self.validate_inputs(stocks, new_data, request.user.id)
+        error_str, companies = self.validate_inputs(stocks, new_data, request.user.id)
         if error_str is not None:
-            return creation_failed_exception(error_str)
+            return creation_failed_exception(error_str, *companies)
 
         new_data['stock_symbols'] = json.dumps(stocks)
         new_data['input_file'] = None
@@ -1291,7 +1291,6 @@ class StockDatasetView(viewsets.ModelViewSet):
             return JsonResponse({'allStockList': modelList})
         except Exception as err:
             return JsonResponse({'message': str(err)})
-
 
 
 class AudiosetView(viewsets.ModelViewSet):

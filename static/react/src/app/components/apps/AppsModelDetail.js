@@ -34,7 +34,6 @@ export class AppsModelDetail extends React.Component {
 		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
 		if(this.props.currentAppDetails == null)
 			this.props.dispatch(getAppDetails(this.props.match.params.AppId));
-		//It will trigger when refresh happens on url
 		if(isEmpty(this.props.modelSummary)){
 			this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));
 			this.props.dispatch(updateModelSlug(this.props.match.params.slug));
@@ -52,8 +51,7 @@ export class AppsModelDetail extends React.Component {
 			let element = document.getElementsByClassName("noTable")[0].parentElement.parentElement.nextElementSibling.children[0].firstElementChild;
 			element.remove()
 		}
-		let currentModel= this.props.modelSlug;
-		if(Object.keys(this.props.modelList).length != 0 && this.props.modelList.data.filter(i=>i.slug === currentModel)[0].viewed === false){
+		if(Object.keys(this.props.modelList).length != 0 && this.props.modelList.data.filter(i=>i.slug === this.props.modelSlug)[0].viewed === false){
 			$(".notifyBtn").trigger('click');
 		}
 		window.scrollTo(0, 0);
@@ -63,8 +61,7 @@ export class AppsModelDetail extends React.Component {
 		}
 		this.props.dispatch(getAppsAlgoList(1));
 		
-		let algoDt = this.props.modelSummary.TrainAlgorithmMapping;
-		let selAlgoList = Object.values(algoDt)
+		let selAlgoList = Object.values(this.props.modelSummary.TrainAlgorithmMapping)
 		let noOfHeads = $(".sm-mb-20").length;
 			for(var i=0;i<noOfHeads;i++){
 				let algoNam = $(".sm-mb-20")[i].innerText.replace(/ /g,'').toLocaleUpperCase();
@@ -106,7 +103,7 @@ export class AppsModelDetail extends React.Component {
 				if(algorithmName != ""){
 					let info = document.createElement('a');
 					var att = document.createAttribute("class");
-					this.props.currentAppId==13?att.value = "summaryLinkReg":att.value = "summaryLink";
+					att.value = this.props.currentAppId==13?"summaryLinkReg":"summaryLink";
 					info.setAttributeNode(att);
 					var modelName= store.getState().apps.modelSummary.name;
 					let sel = selAlgoList.filter(i => (i.model_id).includes(algorithmName+"_"))
@@ -147,7 +144,6 @@ export class AppsModelDetail extends React.Component {
 		var showCreateScore = true;
 		var hyperParameterData;
 		let mlink = window.location.pathname.includes("analyst")?"/analyst":"/autoML"
-		const modelLink = "/apps/"+this.props.match.params.AppId+ mlink + "/models";
 		if (!$.isEmptyObject(modelSummary)) {
 			hyperParameterData = store.getState().apps.modelSummary.data.model_hyperparameter;
       showExportPmml = modelSummary.permission_details.downlad_pmml;
@@ -172,24 +168,16 @@ export class AppsModelDetail extends React.Component {
 						if(data.cardWidth == 100){
 							componentsWidth = 0;
 							return (<div key={i} className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
-						}
-						else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
+						}else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
 							componentsWidth = data.cardWidth;
 							return (<div key={i} className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
-						}
-						else{
+						}else{
 							componentsWidth = componentsWidth+data.cardWidth;
 							return (<div key={i} className={nonClearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 						}
 					}else{
-						if(data.cardWidth == 100 || componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
-							componentsWidth = data.cardWidth;
-							return (<div key={i} className={clearfixClass}></div>)
-						}
-						else{
-							componentsWidth = componentsWidth+data.cardWidth;
-							return (<div key={i} className={nonClearfixClass}></div>)
-						}
+						componentsWidth = componentsWidth+data.cardWidth;
+						return (<div key={i} className={nonClearfixClass}></div>)
 					}
 				});
 			}
@@ -204,10 +192,10 @@ export class AppsModelDetail extends React.Component {
 										<div className="btn-group summaryIcons">
 											<button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
 											<button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
-												<i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
+												<i class="fa fa-columns"></i>
 											</button>
-											<Link className="btn btn-default continue btn-close" to={modelLink} onClick={this.updateModelSummaryFlag.bind(this,false)}>
-												<i class="zmdi zmdi-hc-lg zmdi-close"></i>
+											<Link className="btn btn-default continue btn-close" to={`/apps/${this.props.match.params.AppId}${mlink}/models`} onClick={this.updateModelSummaryFlag.bind(this,false)}>
+												<i class="fa fa-times"></i>
 											</Link>
 										</div>
 									</div>
@@ -218,13 +206,11 @@ export class AppsModelDetail extends React.Component {
 										<div className="container-fluid">
 											{cardDataList}
 										</div>
-										<div>
-											{failedAlgorithms.length>0?`* Failed Algorithms: ${failedAlgorithms}.`:""}
-										</div>
+										{failedAlgorithms.length>0 && <div>* Failed Algorithms: {failedAlgorithms}.</div>}
 										<div className="col-md-12 text-right xs-mt-30">
 											{!$.isEmptyObject(hyperParameterData)?
 												<span>
-													<Button bsStyle="primary" onClick={this.gotoHyperparameterSummary.bind(this,true)}><i className="zmdi zmdi-hc-lg zmdi-undo"></i> Back</Button>
+													<Button bsStyle="primary" onClick={this.gotoHyperparameterSummary.bind(this,true)}><i className="fa fa-undo"></i> Back</Button>
 													<span className="xs-pl-10"></span>
 												</span>:""
 											}

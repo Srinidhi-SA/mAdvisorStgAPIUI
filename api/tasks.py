@@ -800,7 +800,6 @@ def trigger_outlook_periodic_job():
                             data['email'] = value['emailAddress']['address']
                             mail_id = data['email']
                     except Exception as error:
-                        print('error >>>>>>>>>', error)
                         outlook_autoML_failure_mail(trainer_object_id=None, error=error, mail_id=mail_id)
                         print('failure mail sent')
                         break
@@ -813,7 +812,6 @@ def trigger_outlook_periodic_job():
                     break
                 ##########################################################################################
         else:
-            print('error >>>>>>>>>', mails['err'])
             outlook_autoML_failure_mail(trainer_object_id=None, error=mails['err'], mail_id=mail_id)
             print('failure mail sent')
     else:
@@ -1152,6 +1150,7 @@ def outlook_autoML_failure_mail(trainer_object_id=None, error=None, mail_id=None
     r = get_outlook_auth(settings.OUTLOOK_AUTH_CODE, settings.OUTLOOK_REFRESH_TOKEN,
                          settings.OUTLOOK_DETAILS)
     result = r.json()
+    print(result)
     access_token = result['access_token']
     print("got access token")
     if trainer_object_id is None:

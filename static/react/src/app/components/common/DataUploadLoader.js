@@ -7,6 +7,8 @@ import {openDULoaderPopup, hideDULoaderPopup,hideDataPreview} from "../../action
 import {clearDatasetPreview} from  "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env";
 import {handleJobProcessing} from "../../helpers/helper";
+var dataProg = null;
+var array = [];
 
 @connect((store) => {
   return {
@@ -24,20 +26,27 @@ export class DataUploadLoader extends React.Component {
     super();
   }
 
+  componentDidMount(){
+    clearTimeout(dataProg);
+    dataProg = null;
+    array = [];
+  }
   componentWillReceiveProps(newProps){
     if(newProps.metaDataLoaderidxVal !=this.props.metaDataLoaderidxVal)
-      if(store.getState().datasets.dataUploadLoaderModal){
-        var array = this.props.dataLoadedText
-        if(Object.values(array).length>0 && array!=undefined){
+      if(this.props.dataUploadLoaderModal){
+        array = Object.values(this.props.dataLoadedText)
+        if(array.length>0 && array!=undefined){
           for (var x = this.props.metaDataLoaderidx; x < (newProps.metaDataLoaderidxVal-2); x++) {
-            var dataProg = setTimeout(function(i) {
-              if(store.getState().datasets.dataUploadLoaderModal && document.getElementsByClassName("dataPercent")[0].innerHTML === "100%"){
+            dataProg = setTimeout(function(i) {
+              if(!store.getState().datasets.dataUploadLoaderModal || document.getElementsByClassName("dataPercent")[0].innerHTML === "100%"){
                 clearTimeout(dataProg);
+                dataProg = null;
+                array = [];
                 return false;
-              }else if(store.getState().datasets.dataUploadLoaderModal){
-                $("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
-                $("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
-                $("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+              }else if(array.length>1 && store.getState().datasets.dataUploadLoaderModal){
+                document.getElementById("loadingMsgs").innerHTML = "Step " + (i+1) + ": " + array[i];
+                document.getElementById("loadingMsgs1").innerHTML = "Step " + (i+2) + ": " + array[i+1];
+                document.getElementById("loadingMsgs2").innerHTML = "Step " + (i+3) + ": " + array[i+2];
               }
             }, x * 2000, x);
           }
@@ -66,7 +75,7 @@ export class DataUploadLoader extends React.Component {
     return (
       <div id="dULoader">
         <Modal show={store.getState().datasets.dataUploadLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
-          <Modal.Body style={{marginBottom:"0"}}>
+          <Modal.Body className="xs-mb-0">
             <div className="row">
               <div className="col-md-12">
                 <div className="panel xs-mb-0 modal_bg_processing">
@@ -245,7 +254,7 @@ export class DataUploadLoader extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <div>
-              <Link to="/data" style={{paddingRight: "10px"}} >
+              <Link to="/data" style={{paddingRight:10}} >
                 <Button onClick={this.cancelDataUpload.bind(this)}>Cancel</Button>
               </Link>
               <Link to="/data">

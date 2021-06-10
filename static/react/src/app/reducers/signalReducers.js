@@ -4,6 +4,7 @@ export default function reducer(state = {
   signalAnalysis:{},
   signalAnalysisViewed:"",
   algoAnalysis:{},
+  mmLoaderFlag:true,
   selectedAlgo:{},
   selectedSignal:{},
   newSignalShowModal:false,
@@ -29,12 +30,10 @@ export default function reducer(state = {
   chartDataClassId :"",
   selectedL1: "",
   latestSignals:{},
-  selected_signal_type:"",
   toggleValues:{},
   fromVariableSelectionPage:false,
   sigLoaderidxVal:0,
   sigLoaderidx:0,
-  documentModeConfig:'',
   selectedDepthPrediction:[],
 }, action) {
 
@@ -98,7 +97,12 @@ export default function reducer(state = {
         }
       }
       break;
-
+      case "SET_MM_LOADER":{
+        return{
+          ...state,
+          mmLoaderFlag : action.flag
+        }
+      }
   
 
       case "ALGO_ANALYSIS_ERROR":
@@ -348,14 +352,6 @@ export default function reducer(state = {
     }
   }
   break;
-  case "SELECTED_SIGNAL_TYPE":
-  {
-    return{
-      ...state,
-      selected_signal_type:action.signal_type
-    }
-  }
-  break;
   case "CLEAR_SIGNAL_ANALYSIS_BEFORE_LOGOUT":
   {
     return{
@@ -370,14 +366,6 @@ export default function reducer(state = {
       fromVariableSelectionPage:action.flag
     }
   }break;
-  case "SAVE_DOCUMENTMODE_CONFIG":
-      {
-        return {
-          ...state,
-          documentModeConfig: action.value,
-        }
-      }
-      break;
   case "ALL_SIGNAL_LIST":
       {
         return {

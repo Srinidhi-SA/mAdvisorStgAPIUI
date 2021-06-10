@@ -15,8 +15,6 @@ export default function reducer(state = {
   selectedVariablesCount: 0,
   signalMeta: {},
   curUrl: "",
-  editmodelModelSlug:"",
-  editmodelDataSlug:"",
   editmodelFlag:false,
   dataUploadLoaderModal: false,
   dULoaderValue: -1,
@@ -38,7 +36,6 @@ export default function reducer(state = {
   dimensionSubLevel: [],
   updatedSubSetting: default_updatedSubSetting,
   subsettingDone: false,
-  subsettedSlug: "",
   loading_message:[],
   dataLoadedText:[],
   dataTransformSettings:[],
@@ -63,15 +60,12 @@ export default function reducer(state = {
   selectedVariables : {},
   checkedAll:true,
   checked:true,
-  removeDuplicateAttributes :{},
   removeDuplicateObservations :{},
-  duplicateAttributes: false,
   duplicateObservations: false,
-  olUpperRange : {},
-  binsOrLevelsShowModal:false,
-  transferColumnShowModal:false,
+  showBinsLevelsTransformModal:false,
   selectedBinsOrLevelsTab:"Bins",
   selectedItem:{},
+  selectedButton:"",
   shareItem:{},
   shareItemSlug:"",
   shareItemType:"",
@@ -158,7 +152,6 @@ export default function reducer(state = {
           dataPreview: action.dataPreview,
           dataPreviewFlag: true,
           selectedDataSet: action.slug,
-          subsettedSlug: "",
           subsettingDone: false,
           dataTransformSettings:action.dataPreview.meta_data.uiMetaData.transformation_settings.existingColumns,
         }
@@ -171,7 +164,6 @@ export default function reducer(state = {
           dataPreview: action.dataPreview,
           dataPreviewFlag: false,
           selectedDataSet: action.slug,
-          subsettedSlug: "",
           subsettingDone: false,
           dataTransformSettings:action.dataPreview.meta_data.uiMetaData.transformation_settings.existingColumns,
         }
@@ -257,8 +249,6 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          editmodelDataSlug:action.dataSlug,
-          editmodelModelSlug:action.modelSlug,
           editmodelFlag:action.flag
         }
       }
@@ -560,7 +550,6 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          subsettedSlug: action.subsetRs.slug,
           updatedSubSetting: {
             "measureColumnFilters": [],
             "dimensionColumnFilters": [],
@@ -633,7 +622,6 @@ export default function reducer(state = {
       return {
         ...state,
         dataPreview: action.dataPreview,
-        subsettedSlug: "",
         subsettingDone: action.isSubsetting,
         dataTransformSettings:action.dataPreview.meta_data.uiMetaData.transformation_settings.existingColumns,
       }
@@ -726,7 +714,6 @@ export default function reducer(state = {
     {
       return {
         ...state,
-        subsettedSlug: action.slug,
         updatedSubSetting: {
           "measureColumnFilters": [],
           "dimensionColumnFilters": [],
@@ -828,17 +815,6 @@ export default function reducer(state = {
   
       }
       break;
-
-    case "REMOVE_DUPLICATE_ATTRIBUTES":
-    {
-      return {
-        ...state,
-        removeDuplicateAttributes : action.yesOrNo,
-        duplicateAttributes: action.yesOrNo,
-      }
-    }
-    break;
-
     case "REMOVE_DUPLICATE_OBSERVATIONS":
     {
       return {
@@ -885,44 +861,15 @@ export default function reducer(state = {
       }
     break;
 
-    case "BINS_LEVELS_SHOW_MODAL":
-    {
-      return {
+    case "SHOW_BINS_LEVELS_TRANSFORM_MODAL":{
+      return{
         ...state,
-        binsOrLevelsShowModal: true,
-        selectedItem:action.selectedItem
+        showBinsLevelsTransformModal : action.flag,
+        selectedItem : action.item,
+        selectedButton : action.btn
       }
     }
     break;
-
-    case "BINS_LEVELS_HIDE_MODAL":
-    {
-      return {
-        ...state,
-        binsOrLevelsShowModal: false
-      }
-    }
-    break;
-
-    case "TRANSFORM_COLUMN_SHOW_MODAL":
-    {
-      return {
-        ...state,
-        transferColumnShowModal: true,
-        selectedItem:action.selectedItem
-      }
-    }
-    break;
-
-    case "TRANSFORM_COLUMN_HIDE_MODAL":
-    {
-      return {
-        ...state,
-        transferColumnShowModal: false
-      }
-    }
-    break;
-
     case "BINS_OR_LEVELS":
     {
       return {
@@ -958,9 +905,7 @@ export default function reducer(state = {
         ...state,
         missingValueTreatment:{},
         outlierRemoval:{},
-        removeDuplicateAttributes :{},
         removeDuplicateObservations :{},
-        duplicateAttributes : false,
         duplicateObservations : false,
 
       }

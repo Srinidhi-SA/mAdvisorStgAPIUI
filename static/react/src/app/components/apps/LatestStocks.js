@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {getStockAnalysis,updateStockSlug,addDefaultStockSymbolsComp} from "../../actions/appActions";
+import {addDefaultStockSymbolsComp} from "../../actions/appActions";
 import {AppsCreateStockAnalysis} from "./AppsCreateStockAnalysis";
 import {StocksCard} from "./StocksCard";
 
@@ -15,10 +15,6 @@ export class LatestStocks extends React.Component {
         super(props);
     }
 
-    getPreviewData(e) {
-        this.props.dispatch(updateStockSlug(e.target.id))
-        this.props.dispatch(getStockAnalysis(e.target.id))
-    }
     resetAnalyzepopup(){
         this.props.dispatch(addDefaultStockSymbolsComp());
     }

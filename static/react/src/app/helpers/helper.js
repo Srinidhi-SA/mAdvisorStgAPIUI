@@ -20,15 +20,6 @@ export function isEmpty(obj) {
 }
 
 var USERDETAILS = {};
-export function handleSignalToggleButton() {
-  if ($(".toggleOn").is(":visible")) {
-    $(".toggleOff").removeClass("hidden");
-    $(".toggleOn").addClass("hidden")
-  } else {
-    $(".toggleOn").removeClass("hidden");
-    $(".toggleOff").addClass("hidden")
-  }
-}
 
 export const getUserDetailsOrRestart = {
   get: function() {
@@ -50,7 +41,6 @@ export const getUserDetailsOrRestart = {
 function redirectToLogin() {
   var noOfUrls = window.history.length;
   window.history.go("-" + noOfUrls - 1);
-  //window.history.replaceState(null,null,"login");
 }
 
 const FILEUPLOAD = "fileUpload";
@@ -70,7 +60,6 @@ const NORMALTABLE = "normal";
 const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
 const CIRCULARCHARTTABLE = "circularChartTable";
-const DECISIONTREETABLE = "decisionTreeTable"
 const DULOADERPERVALUE = -1;
 const CSLOADERPERVALUE = -1;
 const APPSLOADERPERVALUE = -1;
@@ -307,33 +296,10 @@ export function showHideSideTable(colstats) {
     $("#tab_statistics #pnl_stc").removeClass("in");
     $("#tab_statistics a").addClass("collapsed");
   } else {
-
     $("#tab_statistics #pnl_stc").addClass("in");
     $("#tab_statistics a").removeClass("collapsed");
     $("#tab_statistics #pnl_stc").removeAttr("style");
-
   }
-
-}
-
-export function showHideSubsetting(colType, subsetData, dateflag) {
-
-  if (dateflag == true || (colType == "dimension" && $.isEmptyObject(subsetData))) {
-    $(function() {
-      $("#tab_subsettings #pnl_tbset").removeClass("in");
-      $("#tab_subsettings a").addClass("collapsed");
-      $("#saveSubSetting").hide();
-    });
-  } else {
-    $(function() {
-      $("#tab_subsettings #pnl_tbset").addClass("in");
-      $("#tab_subsettings a").removeClass("collapsed");
-      $("#tab_subsettings #pnl_tbset").removeAttr("style");
-      $("#saveSubSetting").show();
-    });
-
-  }
-
 }
 
 export function decimalPlaces(number) {
@@ -373,7 +339,6 @@ export {
   CONFUSIONMATRIX,
   HEATMAPTABLE,
   CIRCULARCHARTTABLE,
-  DECISIONTREETABLE,
   DULOADERPERVALUE,
   CSLOADERPERVALUE,
   LOADERMAXPERVALUE,
@@ -495,11 +460,9 @@ export function bytesToSize(bytes) {
 export function downloadSVGAsPNG(chartClassId) {
   var nodeList = []
   var nodeList2 = []
-  var nodeList3 = []
   var nodeList4 = []
   nodeList = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
   nodeList2 = document.querySelector("." + chartClassId + ">svg").querySelectorAll('.c3-axis path');
-  nodeList3 = document.querySelector("." + chartClassId + ">svg").querySelectorAll("svg text");
   nodeList4 = document.querySelector("." + chartClassId + ">svg").querySelectorAll(".c3-title");
 
   var line_graph = Array.from(nodeList);
@@ -522,7 +485,6 @@ export function downloadSVGAsPNG(chartClassId) {
   });
 
 }
-//return status msg html string, msg_type can be error, warning,or info.mascot_type will be small_mascot,large_mascot or without_mascot
 export function statusMessages(msg_type, msg, mascot_type) {
   let imgsrc_url = ""
   let status_text = ""
@@ -565,32 +527,7 @@ export function statusMessages(msg_type, msg, mascot_type) {
   }
   return htmlString
 }
-// export function toggleVisualization(slug, actionsData) {
-//   let flag = true;
-//   let transformationSettings = actionsData;
-//   $.each(transformationSettings, function(key, val) {
-//     if (val.slug == slug) {
-//       $.each(val.columnSetting, function(key1, val1) {
-//         if (val1.actionName == IGNORE_SUGGESTION && val1.status == true)
-//           flag = false;
-//         }
-//       );
-//     }
-//   });
-//   if (flag == false) {
-//     $(function() {
-//       $("#tab_visualizations #pnl_visl").removeClass("in");
-//       $("#tab_visualizations a").addClass("collapsed");
-//     });
-//   } else {
-//     $(function() {
-//       $("#tab_visualizations #pnl_visl").addClass("in");
-//       $("#tab_visualizations a").removeClass("collapsed");
-//       $("#tab_visualizations #pnl_visl").removeAttr("style");
-//     });
-//   }
 
-// }
 
 export function removeChatbotOnLogout() {
   var tags = document.getElementsByTagName('script');

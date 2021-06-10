@@ -8,7 +8,8 @@ import {hideDataPreview} from "../../actions/dataActions";
 import { DYNAMICLOADERINTERVAL, handleJobProcessing} from "../../helpers/helper";
 import {clearCreateSignalInterval} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env";
-
+var sigProg = null;
+var array = []
 @connect((store) => {
   return {
     createSignalLoaderModal: store.signals.createSignalLoaderModal,
@@ -25,21 +26,27 @@ export class CreateSignalLoader extends React.Component {
     super(props);
   }
 
+	componentDidMount(){
+		clearTimeout(sigProg);
+		sigProg = null;
+		array = [];
+	}
   componentWillReceiveProps(newProps){
 	if(newProps.sigLoaderidxVal != this.props.sigLoaderidxVal)
-		if(store.getState().signals.createSignalLoaderModal){
-			var array = this.props.signalLoadedText
-			if(Object.values(array).length>0 && array!=undefined){
+		if(this.props.createSignalLoaderModal){
+			array = Object.values(this.props.signalLoadedText)
+			if(array.length>0 && array!=undefined){
 				for (var x = this.props.sigLoaderidx; x < (newProps.sigLoaderidxVal-2); x++) {
-					var sigProg = setTimeout(function(i) {
-						 if(store.getState().signals.createSignalLoaderModal){
-							if(document.getElementsByClassName("sigProgress")[0].innerHTML === "100%"){
-								clearTimeout(sigProg);
-								return false;
-							}else
-							$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
-							$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
-							$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+					sigProg = setTimeout(function(i) {
+						if(!store.getState().signals.createSignalLoaderModal || document.getElementsByClassName("sigProgress")[0].innerHTML === "100%"){
+							clearTimeout(sigProg);
+							sigProg = null;
+							array = []
+							return false;
+						}else if(array.length>1 && store.getState().signals.createSignalLoaderModal){
+							document.getElementById("loadingMsgs").innerHTML = "Step " + (i+1) + ": " + array[i];
+							document.getElementById("loadingMsgs1").innerHTML = "Step " + (i+2) + ": " + array[i+1];
+							document.getElementById("loadingMsgs2").innerHTML = "Step " + (i+3) + ": " + array[i+2];
 						}
 					}, x * 2000, x);
 				}
@@ -77,7 +84,7 @@ export class CreateSignalLoader extends React.Component {
 
                 <Modal show={store.getState().signals.createSignalLoaderModal}  backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
 
-                <Modal.Body style={{marginBottom:"0"}}>
+                <Modal.Body className="xs-mb-0">
 
 
 				<div className="row">
@@ -252,38 +259,20 @@ export class CreateSignalLoader extends React.Component {
 							</div>
 							<div class="modal-steps" id="loadingMsgs2">
 							</div>
-
 						</div>
 						<div className="col-sm-3 text-center">
 							{store.getState().signals.createSignalLoaderValue >= 0?<h2 className="text-white sigProgress">{store.getState().signals.createSignalLoaderValue}%</h2>:<h5 style={{display:"block", textAlign: "center" }} className="loaderValue sigProgress">In Progress</h5>}
-
 						</div>
 					</div>
 					</div>
-
-
-                   
-										
                   </div>
                 </div>
               </div>
             </div>
-
-
-
-
-
-
-
-
-
-
           </Modal.Body>
               <Modal.Footer>
                 <div>
-                  <Link to="/signals" style={{
-                    paddingRight: "10px"
-                  }} onClick={this.cancelSignalProcessing.bind(this)}>
+                  <Link to="/signals" style={{paddingRight: 10}} onClick={this.cancelSignalProcessing.bind(this)}>
                     <Button onClick={this.cancelSignalProcessing.bind(this)}>Cancel</Button>
                   </Link>
                   <Link to="/signals" onClick={this.closeModelPopup.bind(this)}>

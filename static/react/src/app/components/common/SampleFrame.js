@@ -2,7 +2,6 @@ import React from "react";
 import {getUserDetailsOrRestart,hidechatbot,removeChatbotOnLogout} from "../../helpers/helper";
 import {KYLO_UI} from "../../helpers/env";
 
-
 export class SampleFrame extends React.Component {
   constructor(){
     super();

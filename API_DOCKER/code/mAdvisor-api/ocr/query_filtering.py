@@ -235,7 +235,7 @@ class QueryCommonFiltering:
                 self.query_set = self.query_set.filter(ocr_image__fields=int(value))
 
         if self.project is not None:
-            self.query_set = self.query_set.filter(ocr_image__project__name__icontains=self.project)
+            self.query_set = self.query_set.filter(ocr_image__project__name__exact=self.project)
 
         return self.query_set
 

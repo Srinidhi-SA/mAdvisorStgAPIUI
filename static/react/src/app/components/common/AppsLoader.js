@@ -3,10 +3,12 @@ import { connect } from "react-redux";
 import {Link} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
-import {openAppsLoaderValue,closeAppsLoaderValue,clearAppsIntervel,updateModelSummaryFlag,showCreateModalPopup,} from "../../actions/appActions";
+import {openAppsLoaderValue,closeAppsLoaderValue,clearAppsIntervel,updateModelSummaryFlag,showCreateModalPopup} from "../../actions/appActions";
 import {hideDataPreview} from "../../actions/dataActions";
 import {STATIC_URL} from "../../helpers/env";
 import {handleJobProcessing} from "../../helpers/helper";
+var appsProg = null;
+var array = []
 
 @connect((store) => {
 	return {
@@ -14,7 +16,6 @@ import {handleJobProcessing} from "../../helpers/helper";
 		appsLoaderPerValue:store.apps.appsLoaderPerValue,
 		appsLoaderText:store.apps.appsLoaderText,
 		appsLoadedText:store.apps.appsLoadedText,
-		appsLoaderImage:store.apps.appsLoaderImage,
 		dataLoadedText:store.datasets.dataLoadedText,
 		currentAppId: store.apps.currentAppId,
 		modelSlug: store.apps.modelSlug,
@@ -33,7 +34,11 @@ export class AppsLoader extends React.Component {
     super();
 	}
 
-
+	componentDidMount(){
+		clearTimeout(appsProg)
+		appsProg = null;
+		array = []
+	}
 
 	componentWillUpdate(){
 		if((this.props.appsLoaderPerValue < 0) && (Object.keys(this.props.appsLoadedText).length <= 0) ){
@@ -48,18 +53,20 @@ export class AppsLoader extends React.Component {
 }
 	componentWillReceiveProps(newProps){
 		if(newProps.modelLoaderidxVal != this.props.modelLoaderidxVal)
-			if((window.location.pathname != "/apps-stock-advisor/") && (store.getState().apps.appsLoaderModal)){
-				var array = this.props.appsLoadedText
-				if(Object.values(array).length>1){
+			if((window.location.pathname != "/apps-stock-advisor/") && (this.props.appsLoaderModal)){
+				array = Object.values(this.props.appsLoadedText);
+				if(array.length>1){
 					for (var x = this.props.modelLoaderidx; x < (newProps.modelLoaderidxVal-2); x++) {
-						var appsProg = setTimeout(function(i) {
-							if(store.getState().apps.appsLoaderModal && document.getElementsByClassName("appsPercent")[0].innerHTML === "100%"){
+						appsProg = setTimeout(function(i) {
+							if(!store.getState().apps.appsLoaderModal){
 								clearTimeout(appsProg);
+								appsProg = null;
+								array = [];
 								return false;
-							}else if(store.getState().apps.appsLoaderModal){
-								$("#loadingMsgs")[0].innerHTML = "Step " + (i+1) + ": " + array[i];
-								$("#loadingMsgs1")[0].innerHTML ="Step " + (i+2) + ": " + array[i+1];
-								$("#loadingMsgs2")[0].innerHTML ="Step " + (i+3) + ": " + array[i+2];
+							}else if(array.length>1 && store.getState().apps.appsLoaderModal){
+								document.getElementById("loadingMsgs").innerHTML = "Step " + (i+1) + ": " + array[i];
+								document.getElementById("loadingMsgs1").innerHTML = "Step " + (i+2) + ": " + array[i+1];
+								document.getElementById("loadingMsgs2").innerHTML = "Step " + (i+3) + ": " + array[i+2];
 							}
 						}, x * 2000, x);
 					}
@@ -122,7 +129,6 @@ export class AppsLoader extends React.Component {
 
   render() {
 		$('#text-carousel').carousel();
-		let img_src=STATIC_URL+store.getState().apps.appsLoaderImage;
 		var hideUrl = "";
 		if(store.getState().apps.currentAppDetails != null)
 			if(this.props.match && (this.props.match.url).indexOf("/createModel") > 0 || this.props.match && (this.props.match.url).indexOf("/createScore") > 0){
@@ -301,42 +307,21 @@ export class AppsLoader extends React.Component {
 
 				</div>
 
-				<img src={img_src} className="img-responsive"/>
+				<img src={`${STATIC_URL}assets/images/Processing_mAdvisor.gif`} className="img-responsive"/>
 
 				<div className="modal_stepsBlock xs-p-10">
 					<div className="row">
 						<div className="col-sm-9">
 							<p><b>mAdvisor evaluating your data set</b></p>
-							<div class="modal-steps" id="loadingMsgs">
-								Please wait while analysing...
-							</div>
-							<div class="modal-steps active" id="loadingMsgs1">
-                                </div>
-                                <div class="modal-steps" id="loadingMsgs2">
-                                </div>
-								{/* <ul class="modal-steps"> */}
-								{/*	<li>----</li>*/}
-									{/* <li class="active"></li> */}
-								{/*	<li>----</li>*/}
-								{/* </ul> */}
-
+							<div class="modal-steps" id="loadingMsgs">Please wait while analysing...</div>
+							<div class="modal-steps active" id="loadingMsgs1"></div>
+							<div class="modal-steps" id="loadingMsgs2"></div>
 						</div>
 						<div className="col-sm-3 text-center">
 							{store.getState().apps.appsLoaderPerValue >= 0?<h2 class="text-white appsPercent">{store.getState().apps.appsLoaderPerValue}%</h2>:<h5 className="loaderValue appsPercent" style={{display:"block", textAlign: "center" }}>In Progress</h5>}
 				  	</div>
 					</div>
 					</div>
-
-
-
-
-
-				{/*store.getState().apps.appsLoaderPerValue >= 0 ?<div className="p_bar_body hidden">
-				<progress className="prg_bar" value={store.getState().apps.appsLoaderPerValue} max={95}></progress>
-				<div className="progress-value"><h3>{store.getState().apps.appsLoaderPerValue} %</h3></div>
-				</div>:""*/}
-
-
 			</div>
 
 
@@ -346,9 +331,7 @@ export class AppsLoader extends React.Component {
 		</Modal.Body>
 		<Modal.Footer>
                 <div>
-                  <Link to={this.props.match.url} style={{
-                    paddingRight: "10px"
-                  }} >
+                  <Link to={this.props.match.url} style={{paddingRight:10}} >
                     <Button onClick={this.cancelCreateModel.bind(this)}>Cancel</Button>
                   </Link>
                   <Link to={hideUrl} >

@@ -2,6 +2,7 @@
 Miscellaneous celery tasks module for OCR.
 """
 import os
+import random
 
 import cv2
 import simplejson as json
@@ -194,6 +195,10 @@ def write_to_ocrimage(self, image, slug, template):
                 temp_obj.template_classification = json.dumps(response['template'])
                 temp_obj.save()
                 if image_queryset.imagefile.path[-4:] == '.pdf':
+                    obj = OCRImage.objects.filter(identifier=image_queryset.identifier, doctype='pdf_page')
+                    image_queryset.fields = sum([int(i.fields) for i in obj])
+                    image_queryset.confidence = sum([float(i.confidence) for i in obj]) / len(obj)
+                    image_queryset.classification = random.choice([i.classification for i in obj])
                     image_queryset.status = 'ready_to_assign'
                     image_queryset.is_recognized = True
                     image_queryset.save()

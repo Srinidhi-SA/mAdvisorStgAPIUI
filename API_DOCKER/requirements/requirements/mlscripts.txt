@@ -33,7 +33,7 @@ pint
 validate_email
 holidays==0.10.3
 imblearn
-torch
+torch==1.2.0
 lightgbm==2.3.1
 mlxtend==0.17.2
 pyspark2pmml

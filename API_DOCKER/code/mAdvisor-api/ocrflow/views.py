@@ -33,34 +33,34 @@ class OCRRulesView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, IsOCRClientUser)
 
     defaults = {
-        "auto_assignmentL1": True,
-        "auto_assignmentL2": True,
+        "auto_assignmentL1":True,
+        "auto_assignmentL2":True,
         "rulesL1": {
-            "custom": {
+            "custom":{
                 "max_docs_per_reviewer": 10,
                 "selected_reviewers": [],
                 "remainaingDocsDistributionRule": 2,
                 "active": "False"
-            },
-            "auto": {
+                },
+            "auto":{
                 "max_docs_per_reviewer": 10,
                 "remainaingDocsDistributionRule": 2,
                 "active": "True"
-            }
-        },
-        "rulesL2": {
-            "custom": {
+                }
+            },
+        "rulesL2":{
+            "custom":{
                 "max_docs_per_reviewer": 10,
                 "selected_reviewers": [],
                 "remainaingDocsDistributionRule": 2,
                 "active": "False"
-            },
-            "auto": {
+                },
+            "auto":{
                 "max_docs_per_reviewer": 10,
                 "remainaingDocsDistributionRule": 2,
                 "active": "True"
+                }
             }
-        }
     }
 
     @list_route(methods=['post'])
@@ -283,6 +283,7 @@ class ReviewRequestView(viewsets.ModelViewSet):
         return queryset
 
     def get_object_from_all(self):
+
         return ReviewRequest.objects.get(
             slug=self.kwargs.get('pk')
         )
@@ -294,6 +295,7 @@ class ReviewRequestView(viewsets.ModelViewSet):
         )
 
     def list(self, request):
+
         return get_listed_data(
             viewset=self,
             request=request,

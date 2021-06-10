@@ -104,6 +104,7 @@ export default function reducer(state = {
   pdfNumber:1,
   pdfDoc: false,
   pdfSlug: "",
+  hideS3Modal: false
 
 }, action) {
   switch (action.type) {
@@ -146,7 +147,7 @@ export default function reducer(state = {
     }
     break;
     case "OCR_UPLOADS_LIST_FAIL":
-    {
+    {  
     throw new Error("Unable to fetch uploaded images list!!");
     }
     break;
@@ -159,7 +160,7 @@ export default function reducer(state = {
     }
     break;
     case "OCR_REV_DOCS_LIST_FAIL":
-    {
+    {  
     throw new Error("Unable to fetch uploaded images list!!");
     }
     break;
@@ -193,7 +194,7 @@ export default function reducer(state = {
         }
       }
       break;
-
+      
     case "SAVE_S3_BUCKET_DETAILS": {
       let curS3Bucket = state.ocrS3BucketDetails;
       curS3Bucket[action.name]= action.val
@@ -221,7 +222,10 @@ export default function reducer(state = {
         s3Loader: false,
         s3Uploaded: false,
         s3FileFetchErrorFlag : false,
-        s3FileFetchSuccessFlag : false
+        s3FileFetchSuccessFlag : false,
+        s3FileFetchErrorMsg : "",
+        s3FileUploadErrorFlag : false,
+        ocrS3BucketDetails : {}
       }
     }
     break;
@@ -252,15 +256,24 @@ export default function reducer(state = {
         ...state,
         s3Loader : false,
         s3FileUploadErrorFlag : true,
+        s3FileFetchErrorMsg : "Failed to upload files, please try again."
       }
     }
     break;
     case "SET_S3_UPLOADED": {
       return {
         ...state,
+        s3FileFetchSuccessFlag : false,
         s3Uploaded : action.flag,
         s3FileList: "",
         s3SelFileList:[]
+      }
+    }
+    break;
+    case "HIDE_S3_MODAL":{
+      return {
+        ...state,
+        hideS3Modal : action.flag
       }
     }
     break;
@@ -405,7 +418,7 @@ export default function reducer(state = {
         }
       }
     break;
-
+    
     case "FILTER_BY_TEMPLATE":
     {
       return {
@@ -481,7 +494,7 @@ export default function reducer(state = {
         filter_rev_accuracy: action.accuracy,
       }
     }
-  break;
+  break; 
     case "UPDATE_CHECKLIST":
       {
         return {
@@ -722,7 +735,7 @@ export default function reducer(state = {
         }
       }
       break;
-
+      
        case "TAB_ACTIVE_VALUE":
       {
         return {
@@ -750,7 +763,7 @@ export default function reducer(state = {
         }
       }
       break;
-
+      
       case "SELECTED_IMAGE_NAME":
       {
         return {
