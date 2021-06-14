@@ -75,6 +75,7 @@ def submit_job_separate_task(command_array, slug):
         if match:
             application_id = match.groups()[0]
             print(("<------------------------ YARN APPLICATION ID ---------------------->", application_id))
+            print(("<------------------------ YARN APPLICATION ID ---------------------->", application_id))
             from api.helper import get_db_object
 
             model_instance = get_db_object(model_name=Job.__name__,
