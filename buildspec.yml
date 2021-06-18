@@ -20,7 +20,8 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - sh -x copyApiFolder.sh & sh -x copySparkFolder.sh
+      - sh copyApiFolder.sh 
+      - sh copySparkFolder.sh
       - cd NGINX_DOCKER
       - docker build --cache-from 115502491259.dkr.ecr.us-west-1.amazonaws.com/madvisor_stg_nginx:build-4ca2a0a3-b717-42be-9634-239f122599b1 -t $REPOSITORY_URI_NGINX:latest .
       - docker tag $REPOSITORY_URI_NGINX:latest $REPOSITORY_URI_NGINX:$IMAGE_TAG_NGINX 
