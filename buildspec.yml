@@ -14,7 +14,7 @@ phases:
       - IMAGE_TAG_API=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
       - IMAGE_TAG_SPARK=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
       - docker pull 115502491259.dkr.ecr.us-west-1.amazonaws.com/madvisor_stg_api:build-4ca2a0a3-b717-42be-9634-239f122599b1
-      - docker pull 115502491259.dkr.ecr.us-west-1.amazonaws.com/madvisor_stg_nginx:build-4ca2a0a3-b717-42be-9634-239f122599b1
+      - docker pull 115502491259.dkr.ecr.us-west-1.amazonaws.com/madvisor_stg_nginx:build-923def2e-9a18-425c-922b-7df1d9a6d6f9
       - docker pull 115502491259.dkr.ecr.us-west-1.amazonaws.com/madvisor_stg_spark:build-4ca2a0a3-b717-42be-9634-239f122599b1
   build:
     commands:
