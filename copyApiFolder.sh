@@ -3,7 +3,7 @@ cp -r requirements API_DOCKER/requirements/
 rm -r NGINX_DOCKER/static/static
 cp -r static NGINX_DOCKER/static/
 cd API_DOCKER
-docker build -t $REPOSITORY_URI_API:latest .
+docker build --cache-from 115502491259.dkr.ecr.us-west-1.amazonaws.com/madvisor_stg_api:build-4ca2a0a3-b717-42be-9634-239f122599b1 -t $REPOSITORY_URI_API:latest .
 docker tag $REPOSITORY_URI_API:latest $REPOSITORY_URI_API:$IMAGE_TAG_API
 $(aws ecr get-login --region us-west-1 --no-include-email) 
 docker push $REPOSITORY_URI_API:$IMAGE_TAG_API
