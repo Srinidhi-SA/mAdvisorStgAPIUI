@@ -144,7 +144,7 @@ def get_dashboard_metrics(request):
 
 
 def get_ocr_data():
-    print("Hello")
+    print("Hello from OCR")
     totProjects = Project.objects.all().count()
     totOCRImages = OCRImage.objects.all().count()
 
