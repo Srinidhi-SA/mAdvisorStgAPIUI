@@ -1,5 +1,7 @@
 version: 0.2
 
+env:
+  git-credential-helper: yes
 phases:
   pre_build:
     commands:
@@ -8,7 +10,9 @@ phases:
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email) 
       - REPOSITORY_URI_NGINX=115502491259.dkr.ecr.us-west-1.amazonaws.com/madvisor_stg_nginx 
       - REPOSITORY_URI_API=115502491259.dkr.ecr.us-west-1.amazonaws.com/madvisor_stg_api
-      - REPOSITORY_URI_SPARK=115502491259.dkr.ecr.us-west-1.amazonaws.com/madvisor_stg_spark     
+      - REPOSITORY_URI_SPARK=115502491259.dkr.ecr.us-west-1.amazonaws.com/madvisor_stg_spark 
+      - git clone -b main --single-branch https://Srinidhi-SA:Sri160293@github.com/Srinidhi-SA/mAdvisorDocker    
+      - cp madvisorDocker/* .
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG_NGINX=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
       - IMAGE_TAG_API=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
